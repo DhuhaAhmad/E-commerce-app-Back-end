@@ -1,0 +1,14 @@
+{
+  "name": "e-commerce-app-back-end",
+  "version": "1.0.0",
+  "description": "Back-end for E-commerce application",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

@@ -1,12 +1,12 @@
 const express = require('express');
 const app = express();
 
+const userRoute = require('./src/routes/user-route')
+
 const sequelize = require('./src/config/db')
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send('Hello, I\'m working');
-});
+app.use(userRoute)
 
 
 sequelize.authenticate()

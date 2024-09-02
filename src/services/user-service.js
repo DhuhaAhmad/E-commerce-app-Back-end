@@ -1,14 +1,29 @@
 const User = require('../models/User')
+const bcrypt = require('bcryptjs')
 
 
-const createUser = (userData)=>{
+const createUser = async(firstName,lastName,email,password)=>{
 
     try {
-        const newUser = User.create(userData)
+        const existingUser  = await User.findOne({where: {email}}) 
+        if(existingUser){
+            throw new Error('User is already Exist')
+        }
+
+        // Hash password
+        const salt = await bcrypt.genSalt(10) //generate random string of data 
+        hashedPassword = await bcrypt.hash(password,salt)
+
+        const newUser = User.create({
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword
+        })
         return newUser
     } catch (error) {
         
-        throw new Error('Error crwating user', error)
+        throw new Error('Error creating user', error)
     }
 }
 
@@ -21,7 +36,7 @@ const logIn = async(email,password) =>{
          throw new NotExistEmailError('This email is not exist')
        }
 
-       const isPasswordValid = await password === user.password
+       const isPasswordValid = await bcrypt.compare(password,user.password)
        if(!isPasswordValid){
         throw new WrongPasswordError('Wrong password')
 

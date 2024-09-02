@@ -8,7 +8,7 @@ const createUser = async(req,res)=>{
         // object destructure
         const {firstName ,lastName ,email ,password} = req.body
 
-        const newUser = await userService.createUser({firstName ,lastName ,email ,password})
+        const newUser = await userService.createUser(firstName ,lastName ,email ,password)
 
         return res.status(201).json(newUser)
 

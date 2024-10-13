@@ -1,5 +1,6 @@
+require('dotenv').config()
 const userService = require('../services/user-service')
-
+const jwt = require('jsonwebtoken')
 
 const createUser = async(req,res)=>{
 
@@ -32,10 +33,15 @@ const logIn = async(req,res)=>{
 
         const user = await userService.logIn(email ,password)
           
-        return res.status(200).send("Welcome "+user.firstName)
+        const token = jwt.sign({email:user.email}, process.env.JWT_SECRET_KEY, {expiresIn:'2h'})
+        // return res.status(200).send("Welcome "+user.firstName)
+        return res.status(200).json({token:token})
+        
+
 
     } catch (error) {
-      
+
+        console.log(39,error.message)
         if (error.message === 'Login failed: This email is not exist') {
             return res.status(401).json({ error: 'This email is not exist' });
           }
@@ -47,7 +53,28 @@ const logIn = async(req,res)=>{
     }
 }
 
+const logOut = async(req,res)=>{
+
+    const token = req.header('Authorization')?.split(' ')[1]
+    console.log(token)
+
+    const result = await userService.logOut(token)
+    console.log(result)
+
+    if (result.success) {
+        return res.status(200).json({ msg: result.msg });
+    } else {
+        return res.status(400).json({ msg: result.msg });
+    }
+}
+
+const protected = async(req,res)=>{
+   return res.json({msg:"protected"})
+}
+
 module.exports ={
     createUser,
-    logIn
+    logIn,
+    logOut,
+    protected
 }
